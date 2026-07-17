@@ -130,13 +130,25 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+# Manifest storage requires `collectstatic` to have run against a writable disk.
+# Vercel's build is read-only at runtime, so fall back to plain (non-manifest)
+# whitenoise storage there; Render/Railway still get the hashed/manifest version.
 STORAGES = {
     'default': {'BACKEND': 'django.core.files.storage.FileSystemStorage'},
-    'staticfiles': {'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage'},
+    'staticfiles': {
+        'BACKEND': (
+            'whitenoise.storage.CompressedStaticFilesStorage'
+            if os.environ.get('VERCEL')
+            else 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+        )
+    },
 }
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+# Vercel's filesystem is read-only except /tmp, and /tmp is wiped between
+# invocations, so uploaded photos won't persist there. Fine for a demo;
+# swap in Cloudinary/S3 storage before relying on uploads in production.
+MEDIA_ROOT = Path('/tmp/media') if os.environ.get('VERCEL') else BASE_DIR / 'media'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

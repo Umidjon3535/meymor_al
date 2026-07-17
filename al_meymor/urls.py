@@ -8,5 +8,6 @@ urlpatterns = [
     path('', include('core.urls')),
 ]
 
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+# Whitenoise only serves STATIC_URL; MEDIA still needs Django to serve it
+# since there's no separate object storage configured yet.
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
