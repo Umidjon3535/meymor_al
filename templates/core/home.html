@@ -1,0 +1,88 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block content %}
+<div class="container">
+  <div class="hero">
+    <div class="hero-content">
+      <div class="hero-badge">⭐ O'zbekistondagi ustalar platformasi</div>
+      <h1>Eng yaxshi <span class="gradient-text">ustalarni</span><br>uyingizga yetkazamiz</h1>
+      <p>Arxitektor, qurilish, remont, santexnika va boshqa xizmatlar. Ishonchli ustalar, shaffof narxlar va tezkor buyurtma orqali eng yaqin mutaxassisni toping.</p>
+
+      <form method="get" class="hero-search">
+        <div class="hs-field">
+          <span>🔍</span>
+          <input type="text" name="q" value="{{ query }}" placeholder="Qaysi xizmat kerak?">
+        </div>
+        <div class="hs-divider"></div>
+        <div class="hs-field">
+          <span>📍</span>
+          <input type="text" placeholder="Joylashuv (Toshkent...)">
+        </div>
+        <button type="submit" class="btn btn-primary">Qidirish</button>
+      </form>
+
+      <div class="hero-stats">
+        <div class="hero-stat"><div class="num">{{ stats.masters_count }}</div><div class="label">Usta</div></div>
+        <div class="hero-stat"><div class="num">{{ stats.categories_count }}</div><div class="label">Yo'nalish</div></div>
+        <div class="hero-stat"><div class="num">{{ stats.completed_orders }}</div><div class="label">Yakunlangan ish</div></div>
+      </div>
+    </div>
+
+    <div class="hero-visual">
+      <div class="hv-emoji">🏗️</div>
+      <div class="hv-badge">
+        <div class="hv-tag">🏆 Top yo'nalish</div>
+        <div class="hv-title">Euro remont</div>
+        <div class="hv-sub">Ishonchli ustalar bilan sifatli natija</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-title">Kerakli xizmatni tanlang</div>
+  <div class="page-subtitle">Ustalar va xizmatlar bir joyda — Al-Meymor</div>
+
+  <div class="category-grid" id="categoryGrid">
+    {% for cat in categories %}
+    {% if not user.is_authenticated %}
+    <a class="category-card" href="{% url 'register' %}?role=client&cat={{ cat.slug }}">
+      <div class="emoji">{{ cat.icon }}</div>
+      <div class="name">{{ cat.name }}</div>
+    </a>
+    {% elif user.role == 'client' %}
+    <a class="category-card" href="{% url 'order_create' cat.slug %}">
+      <div class="emoji">{{ cat.icon }}</div>
+      <div class="name">{{ cat.name }}</div>
+    </a>
+    {% else %}
+    <div class="category-card" style="opacity:0.5; cursor:not-allowed;" title="Buyurtma berish faqat mijozlar uchun">
+      <div class="emoji">{{ cat.icon }}</div>
+      <div class="name">{{ cat.name }}</div>
+    </div>
+    {% endif %}
+    {% empty %}
+    <div class="empty-state">Hech narsa topilmadi</div>
+    {% endfor %}
+  </div>
+
+  <div class="section-head">
+    <h2>⭐ Tavsiya etilgan ustalar</h2>
+  </div>
+  <div class="master-grid" id="mastersGrid">
+    {% for m in masters %}
+    <div class="master-card">
+      {% if m.photo %}
+        <img src="{{ m.photo.url }}" alt="{{ m.name_or_username }}">
+      {% else %}
+        <div class="avatar-placeholder">{{ m.name_or_username|first|upper }}</div>
+      {% endif %}
+      <div class="m-name">{{ m.name_or_username }}</div>
+      <div class="m-cat">{{ m.category.icon }} {{ m.category.name }}{% if m.experience %} · {{ m.experience }} yil tajriba{% endif %}</div>
+      <div class="m-rating">{% if m.reviews_count %}⭐ {{ m.rating }} ({{ m.reviews_count }}){% else %}Hali baholanmagan{% endif %}</div>
+      <div class="m-bio">{{ m.bio|default:"Ma'lumot kiritilmagan" }}</div>
+    </div>
+    {% empty %}
+    <div class="empty-state">Hozircha tasdiqlangan ustalar yo'q</div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

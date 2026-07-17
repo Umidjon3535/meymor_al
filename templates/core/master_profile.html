@@ -1,0 +1,48 @@
+{% extends 'core/base.html' %}
+{% block content %}
+<div class="container" style="max-width:600px;">
+  <div class="page-title">Usta profili</div>
+  <div class="page-subtitle">Shartnoma imzolanganidan so'ng profilingizni to'ldiring — mijozlar sizni shu ma'lumotlar orqali ko'radi.</div>
+
+  <div class="card">
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class="field" style="text-align:center;">
+        {% if user.photo %}
+          <img src="{{ user.photo.url }}" alt="" style="width:96px; height:96px; border-radius:50%; object-fit:cover; border:1px solid var(--border);">
+        {% else %}
+          <div class="avatar-placeholder" style="width:96px; height:96px; margin:0 auto;">{{ user.name_or_username|first|upper }}</div>
+        {% endif %}
+        <label style="display:block; margin-top:10px;">{{ form.photo.label }}</label>
+        {{ form.photo }}
+      </div>
+      {% for field in form %}
+        {% if field.name != 'photo' %}
+        <div class="field">
+          <label>{{ field.label }}</label>
+          {{ field }}
+        </div>
+        {% endif %}
+      {% endfor %}
+      <button type="submit" class="btn btn-primary" style="width:100%;">Saqlash</button>
+    </form>
+  </div>
+
+  <div class="card" style="margin-top:20px;">
+    <h3 style="margin-top:0;">Reyting va sharhlar</h3>
+    {% if user.reviews_count %}
+      <div style="font-size:20px; font-weight:800;">⭐ {{ user.rating }} <span style="font-size:13px; color:var(--muted); font-weight:500;">({{ user.reviews_count }} ta sharh)</span></div>
+      {% for order in user.assigned_orders.all %}
+        {% if order.rating %}
+        <div style="border-top:1px solid var(--border); padding:10px 0; font-size:14px;">
+          <div>{% for i in "12345" %}{% if forloop.counter <= order.rating %}★{% else %}☆{% endif %}{% endfor %}</div>
+          <div style="color:var(--muted);">{{ order.review }}</div>
+        </div>
+        {% endif %}
+      {% endfor %}
+    {% else %}
+      <div class="hint">Hozircha baholar yo'q</div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

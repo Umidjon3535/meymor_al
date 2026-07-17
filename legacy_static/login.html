@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Al-Meymor — Kirish</title>
+<link rel="stylesheet" href="css/style.css">
+<script>document.documentElement.setAttribute('data-theme', localStorage.getItem('am_theme') || 'dark');</script>
+</head>
+<body>
+
+<header class="header">
+  <a href="index.html" class="logo"><span class="logo-badge">A</span> Al Meymor</a>
+  <div></div>
+  <div class="nav-menu">
+    <button class="icon-btn" id="themeToggle" onclick="toggleTheme()"></button>
+  </div>
+</header>
+
+<div class="auth-wrap">
+  <div class="card">
+    <div class="tabs">
+      <button class="tab-btn active" id="tabLogin">Kirish</button>
+      <button class="tab-btn" id="tabRegister">Ro'yxatdan o'tish</button>
+    </div>
+
+    <!-- LOGIN FORM -->
+    <form id="loginForm">
+      <div class="field">
+        <label>Telefon raqam</label>
+        <input type="text" id="loginPhone" placeholder="+998 90 123 45 67" required>
+      </div>
+      <div class="field">
+        <label>Parol</label>
+        <input type="password" id="loginPassword" required>
+      </div>
+      <div class="error-text" id="loginError"></div>
+      <button type="submit" class="btn btn-primary" style="width:100%;">Kirish</button>
+    </form>
+
+    <!-- REGISTER FORM -->
+    <form id="registerForm" style="display:none;">
+      <div class="role-toggle">
+        <button type="button" class="role-btn active" data-role="client">Mijoz</button>
+        <button type="button" class="role-btn" data-role="master">Usta</button>
+      </div>
+
+      <div class="field">
+        <label>Ism familiya</label>
+        <input type="text" id="regName" required>
+      </div>
+      <div class="field">
+        <label>Telefon raqam</label>
+        <input type="text" id="regPhone" placeholder="+998 90 123 45 67" required>
+      </div>
+      <div class="field">
+        <label>Parol</label>
+        <input type="password" id="regPassword" required>
+      </div>
+
+      <div class="field" id="masterCategoryField" style="display:none;">
+        <label>Yo'nalish</label>
+        <select id="regCategory"></select>
+      </div>
+
+      <div class="hint" id="masterHint" style="display:none;">
+        Usta sifatida ro'yxatdan o'tgach, ariza admin tomonidan ko'rib chiqiladi. Admin siz bilan shartnoma tuzgach, kirish imkoni ochiladi.
+      </div>
+
+      <div class="error-text" id="regError"></div>
+      <button type="submit" class="btn btn-primary" style="width:100%; margin-top:10px;">Ro'yxatdan o'tish</button>
+    </form>
+  </div>
+</div>
+
+<script src="js/db.js"></script>
+<script src="js/theme.js"></script>
+<script src="js/auth.js"></script>
+</body>
+</html>

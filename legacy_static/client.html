@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Al-Meymor — Mijoz kabineti</title>
+<link rel="stylesheet" href="css/style.css">
+<script>document.documentElement.setAttribute('data-theme', localStorage.getItem('am_theme') || 'dark');</script>
+</head>
+<body>
+
+<header class="header">
+  <a href="index.html" class="logo"><span class="logo-badge">A</span> Al Meymor</a>
+  <div></div>
+  <div class="nav-menu" id="navMenu"></div>
+</header>
+
+<div class="container">
+  <div class="page-title">Mening buyurtmalarim</div>
+  <div class="page-subtitle">Buyurtmalaringiz holatini shu yerdan kuzatib boring</div>
+
+  <div id="ordersList"></div>
+</div>
+
+<!-- Chat modal -->
+<div class="modal-overlay" id="chatModal" style="display:none;">
+  <div class="modal" style="max-width:420px;">
+    <div class="modal-head">
+      <h3>Admin bilan chat</h3>
+      <button class="close-btn" onclick="closeChatModal()">✕</button>
+    </div>
+    <div class="chat-box" id="chatBox"></div>
+    <div class="chat-input">
+      <input type="text" id="chatInput" placeholder="Xabar yozing...">
+      <button class="btn btn-primary btn-sm" id="chatSendBtn">Yuborish</button>
+    </div>
+  </div>
+</div>
+
+<!-- Rating modal -->
+<div class="modal-overlay" id="rateModal" style="display:none;">
+  <div class="modal" style="max-width:380px;">
+    <div class="modal-head">
+      <h3>Ustani baholang</h3>
+      <button class="close-btn" onclick="closeRateModal()">✕</button>
+    </div>
+    <div class="stars" id="ratingStars">
+      <span data-v="1">★</span><span data-v="2">★</span><span data-v="3">★</span><span data-v="4">★</span><span data-v="5">★</span>
+    </div>
+    <div class="field" style="margin-top:14px;">
+      <label>Sharh</label>
+      <textarea id="reviewText" placeholder="Fikringizni yozing..."></textarea>
+    </div>
+    <button class="btn btn-primary" style="width:100%;" id="submitRatingBtn">Yuborish</button>
+  </div>
+</div>
+
+<script src="js/db.js"></script>
+<script src="js/theme.js"></script>
+<script src="js/client.js"></script>
+</body>
+</html>

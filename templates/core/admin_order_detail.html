@@ -1,0 +1,59 @@
+{% extends 'core/admin_base.html' %}
+{% load static %}
+{% block admin_content %}
+<a href="{% url 'admin_orders' %}" class="hint">← Buyurtmalarga qaytish</a>
+<div class="card" style="margin-top:14px; max-width:520px;">
+  <div><b>{{ order.category.icon }} {{ order.category.name }}</b> — {{ order.client_name }} ({{ order.client_phone }})</div>
+  <div class="hint">{{ order.address }}</div>
+  <div class="order-desc">{{ order.description|default:"Izohsiz" }}</div>
+
+  <div class="stages">
+    {% for label in order.STAGE_CHOICES %}
+    <div class="stage {% if forloop.counter0 < order.stage %}done{% elif forloop.counter0 == order.stage %}active{% endif %}">
+      <div class="dot">{% if forloop.counter0 < order.stage %}✓{% else %}{{ forloop.counter }}{% endif %}</div>
+      {{ label.1 }}
+    </div>
+    {% endfor %}
+  </div>
+
+  <form method="post" action="{% url 'admin_order_assign' order.id %}">
+    {% csrf_token %}
+    <div class="field">
+      <label>Usta biriktirish</label>
+      <select name="master_id">
+        <option value="">— tanlanmagan —</option>
+        {% for m in masters %}
+        <option value="{{ m.id }}" {% if order.master_id == m.id %}selected{% endif %}>{{ m.name_or_username }} (⭐ {{ m.rating }})</option>
+        {% endfor %}
+      </select>
+    </div>
+    <button type="submit" class="btn btn-outline btn-sm">Saqlash</button>
+  </form>
+
+  <div style="margin:16px 0;">
+    {% if order.stage < 3 %}
+    <form method="post" action="{% url 'admin_order_advance' order.id %}">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-primary btn-sm">Keyingi bosqichga o'tkazish →</button>
+    </form>
+    {% else %}
+    <span class="tag approved">Yakunlangan</span>
+    {% endif %}
+  </div>
+
+  <h4>Chat</h4>
+  <div class="chat-box" id="chatBox"></div>
+  <div class="chat-input">
+    <input type="text" id="chatInput" placeholder="Xabar yozing...">
+    <button class="btn btn-primary btn-sm" id="chatSendBtn">Yuborish</button>
+  </div>
+</div>
+
+<script src="{% static 'js/chat.js' %}"></script>
+<script>
+initChat({{ order.id }}, 'admin', 'chatBox', 'chatInput', 'chatSendBtn', {
+  messages: '{% url "chat_messages" order.id %}',
+  send: '{% url "chat_send" order.id %}',
+});
+</script>
+{% endblock %}

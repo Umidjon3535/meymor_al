@@ -1,0 +1,20 @@
+{% extends 'core/admin_base.html' %}
+{% block admin_content %}
+<div class="page-title">Mijozlar</div>
+{% if not clients %}
+<div class="empty-state">Mijozlar yo'q</div>
+{% else %}
+<table class="table">
+  <thead><tr><th>Ism</th><th>Telefon</th><th>Buyurtmalar soni</th></tr></thead>
+  <tbody>
+    {% for c in clients %}
+    <tr>
+      <td>{{ c.name_or_username }}</td>
+      <td>{{ c.phone }}</td>
+      <td>{{ c.orders.count }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,50 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}Al-Meymor — Admin panel{% endblock %}</title>
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+<script>document.documentElement.setAttribute('data-theme', localStorage.getItem('am_theme') || 'dark');</script>
+</head>
+<body>
+
+<div class="admin-layout">
+  <aside class="admin-sidebar">
+    <div class="logo"><span class="logo-badge">A</span> Al Meymor</div>
+    <a href="{% url 'admin_orders' %}" class="nav-item {% if active_tab == 'orders' %}active{% endif %}">📦 Buyurtmalar</a>
+    <a href="{% url 'admin_requests' %}" class="nav-item {% if active_tab == 'requests' %}active{% endif %}">🧾 Usta so'rovlari</a>
+    <a href="{% url 'admin_masters' %}" class="nav-item {% if active_tab == 'masters' %}active{% endif %}">🧑‍🔧 Ustalar</a>
+    <a href="{% url 'admin_clients' %}" class="nav-item {% if active_tab == 'clients' %}active{% endif %}">👥 Mijozlar</a>
+    <div class="nav-item" onclick="toggleTheme()">🌓 Rejim almashtirish</div>
+    <a href="{% url 'logout' %}" class="nav-item" style="margin-top:8px; color:#ffb3ab;">🚪 Chiqish</a>
+  </aside>
+
+  <main class="admin-main">
+    {% block admin_content %}{% endblock %}
+  </main>
+</div>
+
+{% if messages %}
+<div id="toast-container">
+  {% for message in messages %}
+  <div class="toast-init" data-text="{{ message }}"></div>
+  {% endfor %}
+</div>
+{% endif %}
+
+<script src="{% static 'js/theme.js' %}"></script>
+<script>
+document.querySelectorAll('.toast-init').forEach((el) => {
+  const toast = document.createElement('div');
+  toast.className = 'toast';
+  toast.textContent = el.dataset.text;
+  el.replaceWith(toast);
+  setTimeout(() => toast.classList.add('show'), 10);
+  setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 300); }, 3500);
+});
+</script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

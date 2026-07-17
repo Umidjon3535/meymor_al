@@ -1,0 +1,30 @@
+{% extends 'core/admin_base.html' %}
+{% block admin_content %}
+<div class="page-title">Usta so'rovlari</div>
+{% if not master_requests %}
+<div class="empty-state">Yangi so'rovlar yo'q</div>
+{% else %}
+<table class="table">
+  <thead><tr><th>Ism</th><th>Telefon</th><th>Yo'nalish</th><th></th></tr></thead>
+  <tbody>
+    {% for u in master_requests %}
+    <tr>
+      <td>{{ u.name_or_username }}</td>
+      <td>{{ u.phone }}</td>
+      <td>{% if u.category %}{{ u.category.icon }} {{ u.category.name }}{% else %}-{% endif %}</td>
+      <td>
+        <form method="post" action="{% url 'admin_request_approve' u.id %}" style="display:inline;">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-primary btn-sm">Shartnoma tuzish / tasdiqlash</button>
+        </form>
+        <form method="post" action="{% url 'admin_request_reject' u.id %}" style="display:inline;">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-danger btn-sm">Rad etish</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endif %}
+{% endblock %}

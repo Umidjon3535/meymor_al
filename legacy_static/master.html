@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Al-Meymor — Usta kabineti</title>
+<link rel="stylesheet" href="css/style.css">
+<script>document.documentElement.setAttribute('data-theme', localStorage.getItem('am_theme') || 'dark');</script>
+</head>
+<body>
+
+<header class="header">
+  <a href="index.html" class="logo"><span class="logo-badge">A</span> Al Meymor</a>
+  <div></div>
+  <div class="nav-menu" id="navMenu"></div>
+</header>
+
+<div class="container" style="max-width:600px;">
+  <div class="page-title">Usta profili</div>
+  <div class="page-subtitle">Shartnoma imzolanganidan so'ng profilingizni to'ldiring — mijozlar sizni shu ma'lumotlar orqali ko'radi.</div>
+
+  <div class="card">
+    <form id="profileForm">
+      <div class="field" style="text-align:center;">
+        <img id="mPhotoPreview" src="" alt="" style="width:96px; height:96px; border-radius:50%; object-fit:cover; background:var(--bg); border:1px solid var(--border); display:none;">
+        <div id="mPhotoPlaceholder" class="avatar-placeholder" style="width:96px; height:96px; margin:0 auto;"></div>
+        <label style="display:block; margin-top:10px;">Profil rasmi</label>
+        <input type="file" id="mPhotoInput" accept="image/*">
+      </div>
+      <div class="field">
+        <label>Ism familiya</label>
+        <input type="text" id="mName" required>
+      </div>
+      <div class="field">
+        <label>Telefon</label>
+        <input type="text" id="mPhone" disabled>
+      </div>
+      <div class="field">
+        <label>Yo'nalish</label>
+        <select id="mCategory"></select>
+      </div>
+      <div class="field">
+        <label>Tajriba (necha yil)</label>
+        <input type="number" id="mExperience" min="0">
+      </div>
+      <div class="field">
+        <label>O'zingiz haqingizda</label>
+        <textarea id="mBio" placeholder="Qisqacha tajribangiz, ishlaringiz haqida yozing"></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary" style="width:100%;">Saqlash</button>
+    </form>
+  </div>
+
+  <div class="card" style="margin-top:20px;">
+    <h3 style="margin-top:0;">Reyting va sharhlar</h3>
+    <div id="ratingSummary"></div>
+    <div id="reviewsList"></div>
+  </div>
+</div>
+
+<script src="js/db.js"></script>
+<script src="js/theme.js"></script>
+<script src="js/master.js"></script>
+</body>
+</html>

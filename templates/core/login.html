@@ -1,0 +1,26 @@
+{% extends 'core/base.html' %}
+{% block content %}
+<div class="auth-wrap">
+  <div class="card">
+    <div class="tabs">
+      <span class="tab-btn active">Kirish</span>
+      <a href="{% url 'register' %}" class="tab-btn">Ro'yxatdan o'tish</a>
+    </div>
+
+    <form method="post">
+      {% csrf_token %}
+      <div class="field">
+        <label>Telefon raqam</label>
+        {{ form.phone }}
+      </div>
+      <div class="field">
+        <label>Parol</label>
+        {{ form.password }}
+      </div>
+      {% for error in form.non_field_errors %}<div class="error-text">{{ error }}</div>{% endfor %}
+      <button type="submit" class="btn btn-primary" style="width:100%;">Kirish</button>
+    </form>
+    <div class="hint" style="margin-top:14px;">Admin uchun: telefon <b>admin</b>, parol <b>admin123</b></div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends 'core/admin_base.html' %}
+{% block admin_content %}
+<div class="page-title">Buyurtmalar</div>
+{% if not orders %}
+<div class="empty-state">Buyurtmalar yo'q</div>
+{% else %}
+<table class="table">
+  <thead><tr><th>Mijoz</th><th>Kategoriya</th><th>Manzil</th><th>Holat</th><th></th></tr></thead>
+  <tbody>
+    {% for order in orders %}
+    <tr>
+      <td>{{ order.client_name }}<br><span class="hint">{{ order.client_phone }}</span></td>
+      <td>{{ order.category.icon }} {{ order.category.name }}</td>
+      <td>{{ order.address }}</td>
+      <td><span class="badge">{{ order.stage_label }}</span></td>
+      <td><a class="btn btn-outline btn-sm" href="{% url 'admin_order_detail' order.id %}">Ko'rish</a></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endif %}
+{% endblock %}

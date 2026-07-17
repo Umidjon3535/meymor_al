@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Al-Meymor — Admin panel</title>
+<link rel="stylesheet" href="css/style.css">
+<script>document.documentElement.setAttribute('data-theme', localStorage.getItem('am_theme') || 'dark');</script>
+</head>
+<body>
+
+<div class="admin-layout">
+  <aside class="admin-sidebar">
+    <div class="logo"><span class="logo-badge">A</span> Al Meymor</div>
+    <div class="nav-item active" data-section="orders">📦 Buyurtmalar</div>
+    <div class="nav-item" data-section="requests">🧾 Usta so'rovlari</div>
+    <div class="nav-item" data-section="masters">🧑‍🔧 Ustalar</div>
+    <div class="nav-item" data-section="clients">👥 Mijozlar</div>
+    <div class="nav-item" id="adminThemeToggle">🌓 Rejim almashtirish</div>
+    <div class="nav-item" id="adminLogout" style="margin-top:8px; color:#ffb3ab;">🚪 Chiqish</div>
+  </aside>
+
+  <main class="admin-main">
+    <section id="section-orders">
+      <div class="page-title">Buyurtmalar</div>
+      <div id="ordersTableWrap"></div>
+    </section>
+
+    <section id="section-requests" style="display:none;">
+      <div class="page-title">Usta so'rovlari</div>
+      <div id="requestsTableWrap"></div>
+    </section>
+
+    <section id="section-masters" style="display:none;">
+      <div class="page-title">Ustalar</div>
+      <div id="mastersTableWrap"></div>
+    </section>
+
+    <section id="section-clients" style="display:none;">
+      <div class="page-title">Mijozlar</div>
+      <div id="clientsTableWrap"></div>
+    </section>
+  </main>
+</div>
+
+<!-- Order detail / chat modal -->
+<div class="modal-overlay" id="orderDetailModal" style="display:none;">
+  <div class="modal" style="max-width:460px;">
+    <div class="modal-head">
+      <h3>Buyurtma tafsilotlari</h3>
+      <button class="close-btn" onclick="closeOrderDetail()">✕</button>
+    </div>
+    <div id="orderDetailBody"></div>
+  </div>
+</div>
+
+<script src="js/db.js"></script>
+<script src="js/theme.js"></script>
+<script src="js/admin.js"></script>
+</body>
+</html>

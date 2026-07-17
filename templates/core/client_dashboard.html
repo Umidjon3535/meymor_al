@@ -1,0 +1,123 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block content %}
+<div class="container">
+  <div class="page-title">Mening buyurtmalarim</div>
+  <div class="page-subtitle">Buyurtmalaringiz holatini shu yerdan kuzatib boring</div>
+
+  {% if not orders %}
+  <div class="empty-state">Hali buyurtmalar yo'q. <a href="{% url 'home' %}" style="color:var(--green); font-weight:700;">Buyurtma berish</a></div>
+  {% endif %}
+
+  {% for order in orders %}
+  <div class="card order-card">
+    <div class="order-head">
+      <div class="order-cat">{{ order.category.icon }} {{ order.category.name }}</div>
+      <div class="order-date">{{ order.created_at|date:"d.m.Y H:i" }}</div>
+    </div>
+    <div class="order-desc">{{ order.description|default:"Izohsiz" }} · {{ order.address }}</div>
+
+    <div class="stages">
+      {% for label in order.STAGE_CHOICES %}
+      <div class="stage {% if forloop.counter0 < order.stage %}done{% elif forloop.counter0 == order.stage %}active{% endif %}">
+        <div class="dot">{% if forloop.counter0 < order.stage %}✓{% else %}{{ forloop.counter }}{% endif %}</div>
+        {{ label.1 }}
+      </div>
+      {% endfor %}
+    </div>
+
+    {% if order.master %}
+    <div class="hint">Biriktirilgan usta: <b>{{ order.master.name_or_username }}</b> ({{ order.master.phone }})</div>
+    {% endif %}
+
+    {% if order.rating %}
+    <div class="hint">Sizning bahoyingiz: {% for i in "12345" %}{% if forloop.counter <= order.rating %}★{% else %}☆{% endif %}{% endfor %} — "{{ order.review }}"</div>
+    {% endif %}
+
+    <div style="display:flex; gap:8px; margin-top:10px;">
+      <button class="btn btn-outline btn-sm" onclick="openChat({{ order.id }})">💬 Admin bilan chat</button>
+      {% if order.stage == 3 and not order.rating and order.master %}
+      <button class="btn btn-primary btn-sm" onclick="openRate({{ order.id }})">⭐ Baholash</button>
+      {% endif %}
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+<!-- Chat modal -->
+<div class="modal-overlay" id="chatModal" style="display:none;">
+  <div class="modal" style="max-width:420px;">
+    <div class="modal-head">
+      <h3>Admin bilan chat</h3>
+      <button class="close-btn" onclick="closeChat()">✕</button>
+    </div>
+    <div class="chat-box" id="chatBox"></div>
+    <div class="chat-input">
+      <input type="text" id="chatInput" placeholder="Xabar yozing...">
+      <button class="btn btn-primary btn-sm" id="chatSendBtn">Yuborish</button>
+    </div>
+  </div>
+</div>
+
+<!-- Rating modal -->
+<div class="modal-overlay" id="rateModal" style="display:none;">
+  <div class="modal" style="max-width:380px;">
+    <div class="modal-head">
+      <h3>Ustani baholang</h3>
+      <button class="close-btn" onclick="closeRate()">✕</button>
+    </div>
+    <form id="rateForm" method="post">
+      {% csrf_token %}
+      <div class="stars" id="ratingStars">
+        <span data-v="1">★</span><span data-v="2">★</span><span data-v="3">★</span><span data-v="4">★</span><span data-v="5">★</span>
+      </div>
+      <input type="hidden" name="rating" id="ratingInput" value="0">
+      <div class="field" style="margin-top:14px;">
+        <label>Sharh</label>
+        <textarea name="review" placeholder="Fikringizni yozing..."></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary" style="width:100%;">Yuborish</button>
+    </form>
+  </div>
+</div>
+
+<script src="{% static 'js/chat.js' %}"></script>
+<script>
+let chatController = null;
+
+function openChat(orderId) {
+  document.getElementById('chatModal').style.display = 'flex';
+  initChat(orderId, 'client', 'chatBox', 'chatInput', 'chatSendBtn', {
+    messages: `/chat/${orderId}/messages/`,
+    send: `/chat/${orderId}/send/`,
+  });
+}
+function closeChat() {
+  document.getElementById('chatModal').style.display = 'none';
+}
+
+let selectedRating = 0;
+function openRate(orderId) {
+  selectedRating = 0;
+  document.getElementById('ratingInput').value = 0;
+  updateStars();
+  document.getElementById('rateForm').action = `/client/order/${orderId}/rate/`;
+  document.getElementById('rateModal').style.display = 'flex';
+}
+function closeRate() {
+  document.getElementById('rateModal').style.display = 'none';
+}
+function updateStars() {
+  document.querySelectorAll('#ratingStars span').forEach((s) => {
+    s.classList.toggle('filled', Number(s.dataset.v) <= selectedRating);
+  });
+}
+document.querySelectorAll('#ratingStars span').forEach((s) => {
+  s.addEventListener('click', () => {
+    selectedRating = Number(s.dataset.v);
+    document.getElementById('ratingInput').value = selectedRating;
+    updateStars();
+  });
+});
+</script>
+{% endblock %}

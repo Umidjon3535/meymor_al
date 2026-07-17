@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Al-Meymor</title>
+<link rel="stylesheet" href="css/style.css">
+<script>document.documentElement.setAttribute('data-theme', localStorage.getItem('am_theme') || 'dark');</script>
+</head>
+<body>
+
+<header class="header">
+  <a href="index.html" class="logo"><span class="logo-badge">A</span> Al Meymor</a>
+  <nav class="main-nav">
+    <a href="index.html" class="active">Bosh sahifa</a>
+    <a href="#categoryGrid">Xizmatlar</a>
+    <a href="#mastersGrid">Ustalar</a>
+  </nav>
+  <div class="nav-menu" id="navMenu"></div>
+</header>
+
+<div class="container">
+  <div class="hero">
+    <div class="hero-content">
+      <div class="hero-badge">⭐ O'zbekistondagi ustalar platformasi</div>
+      <h1>Eng yaxshi <span class="gradient-text">ustalarni</span><br>uyingizga yetkazamiz</h1>
+      <p>Arxitektor, qurilish, remont, santexnika va boshqa xizmatlar. Ishonchli ustalar, shaffof narxlar va tezkor buyurtma orqali eng yaqin mutaxassisni toping.</p>
+
+      <div class="hero-search">
+        <div class="hs-field">
+          <span>🔍</span>
+          <input type="text" id="searchInput" placeholder="Qaysi xizmat kerak?">
+        </div>
+        <div class="hs-divider"></div>
+        <div class="hs-field">
+          <span>📍</span>
+          <input type="text" placeholder="Joylashuv (Toshkent...)">
+        </div>
+        <button class="btn btn-primary" onclick="document.getElementById('categoryGrid').scrollIntoView({behavior:'smooth'})">Qidirish</button>
+      </div>
+
+      <div class="hero-stats" id="heroStats"></div>
+    </div>
+
+    <div class="hero-visual" id="heroVisual">
+      <div class="hv-emoji">🏗️</div>
+      <div class="hv-badge">
+        <div class="hv-tag">🏆 Top yo'nalish</div>
+        <div class="hv-title">Euro remont</div>
+        <div class="hv-sub">Ishonchli ustalar bilan sifatli natija</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-title">Kerakli xizmatni tanlang</div>
+  <div class="page-subtitle">Ustalar va xizmatlar bir joyda — Al-Meymor</div>
+
+  <div class="category-grid" id="categoryGrid"></div>
+
+  <div class="section-head">
+    <h2>⭐ Tavsiya etilgan ustalar</h2>
+  </div>
+  <div class="master-grid" id="mastersGrid"></div>
+</div>
+
+<!-- Order modal -->
+<div class="modal-overlay" id="orderModal" style="display:none;">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 id="orderModalTitle">Buyurtma berish</h3>
+      <button class="close-btn" onclick="closeOrderModal()">✕</button>
+    </div>
+    <form id="orderForm">
+      <div class="field">
+        <label>Ismingiz</label>
+        <input type="text" id="orderName" required>
+      </div>
+      <div class="field">
+        <label>Telefon raqamingiz</label>
+        <input type="text" id="orderPhone" placeholder="+998 90 123 45 67" required>
+      </div>
+      <div class="field">
+        <label>Manzil</label>
+        <input type="text" id="orderAddress" required>
+      </div>
+      <div class="field">
+        <label>Izoh (ixtiyoriy)</label>
+        <textarea id="orderDesc" placeholder="Buyurtma haqida qo'shimcha ma'lumot"></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary" style="width:100%;">Buyurtma berish</button>
+    </form>
+  </div>
+</div>
+
+<script src="js/db.js"></script>
+<script src="js/theme.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

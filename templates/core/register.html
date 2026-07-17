@@ -1,0 +1,66 @@
+{% extends 'core/base.html' %}
+{% block content %}
+<div class="auth-wrap">
+  <div class="card">
+    <div class="tabs">
+      <a href="{% url 'login' %}" class="tab-btn">Kirish</a>
+      <span class="tab-btn active">Ro'yxatdan o'tish</span>
+    </div>
+
+    <form method="post" action="?{{ request.GET.urlencode }}" id="registerForm">
+      {% csrf_token %}
+      <div class="role-toggle" id="roleToggle">
+        {% for value, label in form.role.field.choices %}
+        <button type="button" class="role-btn {% if form.role.value == value %}active{% endif %}" data-role="{{ value }}">{{ label }}</button>
+        {% endfor %}
+      </div>
+      <input type="hidden" name="role" id="roleInput" value="{{ form.role.value|default:'client' }}">
+
+      <div class="field">
+        <label>Ism familiya</label>
+        {{ form.name }}
+      </div>
+      <div class="field">
+        <label>Telefon raqam</label>
+        {{ form.phone }}
+      </div>
+      <div class="field">
+        <label>Parol</label>
+        {{ form.password }}
+      </div>
+
+      <div class="field" id="masterCategoryField" style="display:{% if form.role.value == 'master' %}block{% else %}none{% endif %};">
+        <label>Yo'nalish</label>
+        {{ form.category }}
+      </div>
+      <div class="hint" id="masterHint" style="display:{% if form.role.value == 'master' %}block{% else %}none{% endif %};">
+        Usta sifatida ro'yxatdan o'tgach, ariza admin tomonidan ko'rib chiqiladi. Admin siz bilan shartnoma tuzgach, kirish imkoni ochiladi.
+      </div>
+
+      {% for field in form %}
+        {% for error in field.errors %}<div class="error-text">{{ error }}</div>{% endfor %}
+      {% endfor %}
+      {% for error in form.non_field_errors %}<div class="error-text">{{ error }}</div>{% endfor %}
+
+      <button type="submit" class="btn btn-primary" style="width:100%; margin-top:10px;">Ro'yxatdan o'tish</button>
+    </form>
+
+    <script>
+      const roleButtons = document.querySelectorAll('#roleToggle .role-btn');
+      const roleInput = document.getElementById('roleInput');
+      const categoryField = document.getElementById('masterCategoryField');
+      const masterHint = document.getElementById('masterHint');
+      roleButtons.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          roleButtons.forEach((b) => b.classList.remove('active'));
+          btn.classList.add('active');
+          roleInput.value = btn.dataset.role;
+          const isMaster = btn.dataset.role === 'master';
+          categoryField.style.display = isMaster ? 'block' : 'none';
+          masterHint.style.display = isMaster ? 'block' : 'none';
+        });
+      });
+    </script>
+  </div>
+</div>
+{% endblock %}

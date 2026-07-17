@@ -1,0 +1,64 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}Al-Meymor{% endblock %}</title>
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+<script>document.documentElement.setAttribute('data-theme', localStorage.getItem('am_theme') || 'dark');</script>
+</head>
+<body>
+
+{% block header %}
+<header class="header">
+  <a href="{% url 'home' %}" class="logo"><span class="logo-badge">A</span> Al Meymor</a>
+  <nav class="main-nav">
+    <a href="{% url 'home' %}">Bosh sahifa</a>
+    <a href="{% url 'home' %}#categoryGrid">Xizmatlar</a>
+    <a href="{% url 'home' %}#mastersGrid">Ustalar</a>
+  </nav>
+  <div class="nav-menu">
+    <button class="icon-btn" id="themeToggle" onclick="toggleTheme()"></button>
+    {% if user.is_authenticated %}
+      <span style="font-weight:600; font-size:14px;">👋 {{ user.name_or_username }}</span>
+      {% if user.role == 'admin' %}
+        <a href="{% url 'admin_orders' %}" class="btn btn-primary">Admin panel</a>
+      {% elif user.role == 'master' %}
+        <a href="{% url 'master_profile' %}" class="btn btn-primary">Kabinetim</a>
+      {% else %}
+        <a href="{% url 'client_dashboard' %}" class="btn btn-primary">Kabinetim</a>
+      {% endif %}
+      <a href="{% url 'logout' %}" class="btn btn-ghost">Chiqish</a>
+    {% else %}
+      <a href="{% url 'login' %}" class="btn btn-outline">Kirish</a>
+      <a href="{% url 'register' %}" class="btn btn-primary">Ro'yxatdan o'tish</a>
+    {% endif %}
+  </div>
+</header>
+{% endblock %}
+
+{% block content %}{% endblock %}
+
+{% if messages %}
+<div id="toast-container">
+  {% for message in messages %}
+  <div class="toast-init" data-text="{{ message }}"></div>
+  {% endfor %}
+</div>
+{% endif %}
+
+<script src="{% static 'js/theme.js' %}"></script>
+<script>
+document.querySelectorAll('.toast-init').forEach((el) => {
+  const toast = document.createElement('div');
+  toast.className = 'toast';
+  toast.textContent = el.dataset.text;
+  el.replaceWith(toast);
+  setTimeout(() => toast.classList.add('show'), 10);
+  setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 300); }, 3500);
+});
+</script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>
