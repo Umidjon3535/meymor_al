@@ -21,6 +21,8 @@ urlpatterns = [
     path('client/chat/<int:order_id>/', views.client_chat_thread, name='client_chat_thread'),
 
     path('master/', views.master_profile, name='master_profile'),
+    path('master/orders/', views.master_orders, name='master_orders'),
+    path('master/orders/unseen-count/', views.master_orders_unseen_count, name='master_orders_unseen_count'),
 
     path('admin-panel/orders/', views.admin_orders, name='admin_orders'),
     path('admin-panel/orders/unseen-count/', views.admin_orders_unseen_count, name='admin_orders_unseen_count'),
@@ -30,8 +32,10 @@ urlpatterns = [
     path('admin-panel/orders/<int:order_id>/contract/', views.admin_order_contract_upload, name='admin_order_contract_upload'),
     path('admin-panel/orders/<int:order_id>/chat/', views.admin_order_chat, name='admin_order_chat'),
     path('admin-panel/requests/', views.admin_requests, name='admin_requests'),
+    path('admin-panel/requests/unseen-count/', views.admin_requests_unseen_count, name='admin_requests_unseen_count'),
     path('admin-panel/requests/<int:user_id>/approve/', views.admin_request_approve, name='admin_request_approve'),
     path('admin-panel/requests/<int:user_id>/reject/', views.admin_request_reject, name='admin_request_reject'),
     path('admin-panel/masters/', views.admin_masters, name='admin_masters'),
     path('admin-panel/clients/', views.admin_clients, name='admin_clients'),
+    path('admin-panel/clients/unseen-count/', views.admin_clients_unseen_count, name='admin_clients_unseen_count'),
 ]

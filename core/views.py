@@ -268,6 +268,22 @@ def master_profile(request):
     return render(request, 'core/master_profile.html', {'form': form})
 
 
+@role_required('master')
+def master_orders(request):
+    if not request.user.contract_signed:
+        return redirect('logout')
+    orders = Order.objects.filter(master=request.user).select_related('category', 'client')
+    # Visiting the list acknowledges any new assignments.
+    orders.filter(is_seen_by_master=False).update(is_seen_by_master=True)
+    return render(request, 'core/master_orders.html', {'orders': orders})
+
+
+@role_required('master')
+def master_orders_unseen_count(request):
+    count = Order.objects.filter(master=request.user, is_seen_by_master=False).count()
+    return JsonResponse({'count': count})
+
+
 # ---------- Admin panel ----------
 
 @role_required('admin')
@@ -336,7 +352,10 @@ def admin_order_assign(request, order_id):
     order = get_object_or_404(Order, id=order_id)
     if request.method == 'POST':
         master_id = request.POST.get('master_id')
-        order.master_id = master_id or None
+        new_master_id = int(master_id) if master_id else None
+        if new_master_id != order.master_id:
+            order.is_seen_by_master = False
+        order.master_id = new_master_id
         order.save()
         messages.success(request, 'Usta biriktirildi')
     return redirect('admin_order_detail', order_id=order.id)
@@ -348,6 +367,12 @@ def admin_requests(request):
     return render(request, 'core/admin_requests.html', {
         'master_requests': requests_qs, 'active_tab': 'requests',
     })
+
+
+@role_required('admin')
+def admin_requests_unseen_count(request):
+    count = User.objects.filter(role='master', contract_signed=False).count()
+    return JsonResponse({'count': count})
 
 
 @role_required('admin')
@@ -376,4 +401,12 @@ def admin_masters(request):
 @role_required('admin')
 def admin_clients(request):
     clients = User.objects.filter(role='client').order_by('-date_joined')
+    # Visiting the clients list acknowledges any new signups.
+    User.objects.filter(role='client', is_seen_by_admin=False).update(is_seen_by_admin=True)
     return render(request, 'core/admin_clients.html', {'clients': clients, 'active_tab': 'clients'})
+
+
+@role_required('admin')
+def admin_clients_unseen_count(request):
+    count = User.objects.filter(role='client', is_seen_by_admin=False).count()
+    return JsonResponse({'count': count})

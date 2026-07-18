@@ -1,0 +1,40 @@
+{% extends 'core/base.html' %}
+{% block content %}
+<div class="container" style="max-width:600px;">
+  <div class="tabs" style="margin-bottom:20px;">
+    <a href="{% url 'master_profile' %}" class="tab-btn">Profil</a>
+    <span class="tab-btn active">Buyurtmalarim</span>
+  </div>
+
+  <div class="page-title">Menga biriktirilgan buyurtmalar</div>
+  <div class="page-subtitle">Admin sizga biriktirgan buyurtmalar shu yerda ko'rinadi</div>
+
+  {% if not orders %}
+  <div class="empty-state">Hozircha sizga biriktirilgan buyurtma yo'q</div>
+  {% endif %}
+
+  {% for order in orders %}
+  <div class="card order-card">
+    <div class="order-head">
+      <div class="order-cat">{{ order.category.icon }} {{ order.category.name }}</div>
+      <div class="order-date">{{ order.created_at|date:"d.m.Y H:i" }}</div>
+    </div>
+    <div class="order-desc">{{ order.description|default:"Izohsiz" }} · {{ order.address }}</div>
+    <div class="hint">Mijoz: <b>{{ order.client_name }}</b> ({{ order.client_phone }})</div>
+
+    <div class="stages">
+      {% for label in order.STAGE_CHOICES %}
+      <div class="stage {% if forloop.counter0 < order.stage %}done{% elif forloop.counter0 == order.stage %}active{% endif %}">
+        <div class="dot">{% if forloop.counter0 < order.stage %}✓{% else %}{{ forloop.counter }}{% endif %}</div>
+        {{ label.1 }}
+      </div>
+      {% endfor %}
+    </div>
+
+    {% if order.rating %}
+    <div class="hint">Mijoz bahosi: {% for i in "12345" %}{% if forloop.counter <= order.rating %}★{% else %}☆{% endif %}{% endfor %} — "{{ order.review }}"</div>
+    {% endif %}
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

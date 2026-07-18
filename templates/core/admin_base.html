@@ -15,11 +15,17 @@
     <div class="logo"><span class="logo-badge">A</span> Al Meymor</div>
     <a href="{% url 'admin_orders' %}" class="nav-item {% if active_tab == 'orders' %}active{% endif %}">
       📦 Buyurtmalar
-      <span class="nav-badge" id="ordersUnseenBadge" style="display:none;"></span>
+      <span class="nav-badge" id="badge-orders" style="display:none;"></span>
     </a>
-    <a href="{% url 'admin_requests' %}" class="nav-item {% if active_tab == 'requests' %}active{% endif %}">🧾 Usta so'rovlari</a>
+    <a href="{% url 'admin_requests' %}" class="nav-item {% if active_tab == 'requests' %}active{% endif %}">
+      🧾 Usta so'rovlari
+      <span class="nav-badge" id="badge-requests" style="display:none;"></span>
+    </a>
     <a href="{% url 'admin_masters' %}" class="nav-item {% if active_tab == 'masters' %}active{% endif %}">🧑‍🔧 Ustalar</a>
-    <a href="{% url 'admin_clients' %}" class="nav-item {% if active_tab == 'clients' %}active{% endif %}">👥 Mijozlar</a>
+    <a href="{% url 'admin_clients' %}" class="nav-item {% if active_tab == 'clients' %}active{% endif %}">
+      👥 Mijozlar
+      <span class="nav-badge" id="badge-clients" style="display:none;"></span>
+    </a>
     <div class="nav-item" onclick="toggleTheme()">🌓 Rejim almashtirish</div>
     <a href="{% url 'logout' %}" class="nav-item" style="margin-top:8px; color:#ffb3ab;">🚪 Chiqish</a>
   </aside>
@@ -49,11 +55,6 @@ document.querySelectorAll('.toast-init').forEach((el) => {
 });
 
 (function () {
-  const badge = document.getElementById('ordersUnseenBadge');
-  if (!badge) return;
-  let lastCount = 0;
-  let firstCheck = true;
-
   function showToast(text) {
     let container = document.getElementById('toast-container');
     if (!container) {
@@ -69,27 +70,40 @@ document.querySelectorAll('.toast-init').forEach((el) => {
     setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 300); }, 4000);
   }
 
-  function checkUnseen() {
-    fetch('{% url "admin_orders_unseen_count" %}')
-      .then((r) => r.json())
-      .then((data) => {
-        if (data.count > 0) {
-          badge.textContent = data.count > 9 ? '9+' : data.count;
-          badge.style.display = 'flex';
-        } else {
-          badge.style.display = 'none';
-        }
-        if (data.count > 0 && (firstCheck || data.count > lastCount)) {
-          showToast(`Yangi buyurtma keldi! Jami ${data.count} ta ko'rilmagan buyurtma 📦`);
-        }
-        lastCount = data.count;
-        firstCheck = false;
-      })
-      .catch(() => {});
-  }
+  const sources = [
+    { key: 'orders', url: '{% url "admin_orders_unseen_count" %}', label: "Yangi buyurtma keldi! Jami %d ta ko'rilmagan buyurtma 📦" },
+    { key: 'requests', url: '{% url "admin_requests_unseen_count" %}', label: "Yangi usta so'rovi bor! Jami %d ta kutilmoqda 🧾" },
+    { key: 'clients', url: '{% url "admin_clients_unseen_count" %}', label: "Yangi mijoz ro'yxatdan o'tdi! Jami %d ta yangi mijoz 👥" },
+  ];
 
-  checkUnseen();
-  setInterval(checkUnseen, 8000);
+  sources.forEach((source) => {
+    const badge = document.getElementById('badge-' + source.key);
+    if (!badge) return;
+    let lastCount = 0;
+    let firstCheck = true;
+
+    function check() {
+      fetch(source.url)
+        .then((r) => r.json())
+        .then((data) => {
+          if (data.count > 0) {
+            badge.textContent = data.count > 9 ? '9+' : data.count;
+            badge.style.display = 'flex';
+          } else {
+            badge.style.display = 'none';
+          }
+          if (data.count > 0 && (firstCheck || data.count > lastCount)) {
+            showToast(source.label.replace('%d', data.count));
+          }
+          lastCount = data.count;
+          firstCheck = false;
+        })
+        .catch(() => {});
+    }
+
+    check();
+    setInterval(check, 8000);
+  });
 })();
 </script>
 {% block extra_js %}{% endblock %}

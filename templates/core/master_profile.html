@@ -1,6 +1,15 @@
 {% extends 'core/base.html' %}
+{% load static %}
 {% block content %}
 <div class="container" style="max-width:600px;">
+  <div class="tabs" style="margin-bottom:20px;">
+    <span class="tab-btn active">Profil</span>
+    <a href="{% url 'master_orders' %}" class="tab-btn" style="position:relative;">
+      Buyurtmalarim
+      <span class="nav-badge" id="masterOrdersBadge" style="display:none; position:absolute; top:-6px; right:-6px;"></span>
+    </a>
+  </div>
+
   <div class="page-title">Usta profili</div>
   <div class="page-subtitle">Shartnoma imzolanganidan so'ng profilingizni to'ldiring — mijozlar sizni shu ma'lumotlar orqali ko'radi.</div>
 
@@ -45,4 +54,50 @@
     {% endif %}
   </div>
 </div>
+
+<script>
+(function () {
+  const badge = document.getElementById('masterOrdersBadge');
+  if (!badge) return;
+  let lastCount = 0;
+  let firstCheck = true;
+
+  function showToast(text) {
+    let container = document.getElementById('toast-container');
+    if (!container) {
+      container = document.createElement('div');
+      container.id = 'toast-container';
+      document.body.appendChild(container);
+    }
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.textContent = text;
+    container.appendChild(toast);
+    setTimeout(() => toast.classList.add('show'), 10);
+    setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 300); }, 4000);
+  }
+
+  function check() {
+    fetch('{% url "master_orders_unseen_count" %}')
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.count > 0) {
+          badge.textContent = data.count > 9 ? '9+' : data.count;
+          badge.style.display = 'flex';
+        } else {
+          badge.style.display = 'none';
+        }
+        if (data.count > 0 && (firstCheck || data.count > lastCount)) {
+          showToast(`Sizga ${data.count} ta yangi buyurtma biriktirildi 📦`);
+        }
+        lastCount = data.count;
+        firstCheck = false;
+      })
+      .catch(() => {});
+  }
+
+  check();
+  setInterval(check, 8000);
+})();
+</script>
 {% endblock %}

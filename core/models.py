@@ -32,6 +32,7 @@ class User(AbstractUser):
     experience = models.PositiveIntegerField(null=True, blank=True)
     photo = models.ImageField(upload_to='master_photos/', null=True, blank=True)
     contract_signed = models.BooleanField(default=False)
+    is_seen_by_admin = models.BooleanField(default=False)
 
     def __str__(self):
         return f'{self.name_or_username} ({self.get_role_display()})'
@@ -74,6 +75,7 @@ class Order(models.Model):
     rating = models.PositiveSmallIntegerField(null=True, blank=True)
     review = models.TextField(blank=True)
     is_seen_by_admin = models.BooleanField(default=False)
+    is_seen_by_master = models.BooleanField(default=False)
 
     contract_file = models.FileField(upload_to='contracts/', null=True, blank=True)
     contract_uploaded_at = models.DateTimeField(null=True, blank=True)
