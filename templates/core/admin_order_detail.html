@@ -1,5 +1,4 @@
 {% extends 'core/admin_base.html' %}
-{% load static %}
 {% block admin_content %}
 <a href="{% url 'admin_orders' %}" class="hint">← Buyurtmalarga qaytish</a>
 <div class="card" style="margin-top:14px; max-width:520px;">
@@ -41,19 +40,6 @@
     {% endif %}
   </div>
 
-  <h4>Chat</h4>
-  <div class="chat-box" id="chatBox"></div>
-  <div class="chat-input">
-    <input type="text" id="chatInput" placeholder="Xabar yozing...">
-    <button class="btn btn-primary btn-sm" id="chatSendBtn">Yuborish</button>
-  </div>
+  <a href="{% url 'admin_order_chat' order.id %}" class="btn btn-outline btn-sm" style="display:inline-block; margin-top:6px;">💬 Mijoz bilan chat</a>
 </div>
-
-<script src="{% static 'js/chat.js' %}"></script>
-<script>
-initChat({{ order.id }}, 'admin', 'chatBox', 'chatInput', 'chatSendBtn', {
-  messages: '{% url "chat_messages" order.id %}',
-  send: '{% url "chat_send" order.id %}',
-});
-</script>
 {% endblock %}

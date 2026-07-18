@@ -16,6 +16,8 @@ urlpatterns = [
     path('chat/<int:order_id>/send/', views.chat_send, name='chat_send'),
     path('chat/unread/', views.chat_unread_summary, name='chat_unread_summary'),
     path('chat/my-orders/', views.chat_client_orders, name='chat_client_orders'),
+    path('client/chat/', views.client_chat_list, name='client_chat_list'),
+    path('client/chat/<int:order_id>/', views.client_chat_thread, name='client_chat_thread'),
 
     path('master/', views.master_profile, name='master_profile'),
 
@@ -23,6 +25,7 @@ urlpatterns = [
     path('admin-panel/orders/<int:order_id>/', views.admin_order_detail, name='admin_order_detail'),
     path('admin-panel/orders/<int:order_id>/advance/', views.admin_order_advance, name='admin_order_advance'),
     path('admin-panel/orders/<int:order_id>/assign/', views.admin_order_assign, name='admin_order_assign'),
+    path('admin-panel/orders/<int:order_id>/chat/', views.admin_order_chat, name='admin_order_chat'),
     path('admin-panel/requests/', views.admin_requests, name='admin_requests'),
     path('admin-panel/requests/<int:user_id>/approve/', views.admin_request_approve, name='admin_request_approve'),
     path('admin-panel/requests/<int:user_id>/reject/', views.admin_request_reject, name='admin_request_reject'),

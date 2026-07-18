@@ -49,18 +49,10 @@
 {% endif %}
 
 {% if user.is_authenticated and user.role == 'client' %}
-<button class="chat-widget-btn" id="chatWidgetBtn">
+<a class="chat-widget-btn" id="chatWidgetBtn" href="{% url 'client_chat_list' %}">
   💬
   <span class="chat-widget-badge" id="chatWidgetBadge" style="display:none;"></span>
-</button>
-<div class="chat-widget-panel" id="chatWidgetPanel">
-  <div class="chat-widget-head">
-    <button class="back-btn" id="chatWidgetBack">←</button>
-    <span id="chatWidgetTitle">Admin bilan chat</span>
-    <button class="close-btn" id="chatWidgetClose">✕</button>
-  </div>
-  <div class="chat-widget-body" id="chatWidgetBody"></div>
-</div>
+</a>
 {% endif %}
 
 <script src="{% static 'js/theme.js' %}"></script>

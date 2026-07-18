@@ -1,0 +1,29 @@
+{% extends 'core/admin_base.html' %}
+{% load static %}
+{% block admin_content %}
+<div class="chat-page-wrap" style="margin:0; max-width:640px;">
+  <div class="chat-page-card">
+    <div class="chat-page-head">
+      <a href="{% url 'admin_order_detail' order.id %}" class="back-link">←</a>
+      <div class="icon-circle">{{ order.category.icon }}</div>
+      <div class="titles">
+        <div class="t1">{{ order.client_name }}</div>
+        <div class="t2">{{ order.category.name }} · {{ order.client_phone }}</div>
+      </div>
+    </div>
+    <div class="chat-page-body" id="chatBox"></div>
+    <div class="chat-page-input">
+      <input type="text" id="chatInput" placeholder="Xabar yozing...">
+      <button class="btn btn-primary" id="chatSendBtn">Yuborish</button>
+    </div>
+  </div>
+</div>
+
+<script src="{% static 'js/chat.js' %}"></script>
+<script>
+initChat({{ order.id }}, 'admin', 'chatBox', 'chatInput', 'chatSendBtn', {
+  messages: '{% url "chat_messages" order.id %}',
+  send: '{% url "chat_send" order.id %}',
+});
+</script>
+{% endblock %}

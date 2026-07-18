@@ -1,0 +1,24 @@
+{% extends 'core/base.html' %}
+{% block content %}
+<div class="chat-page-wrap" style="max-width:640px;">
+  <div class="page-title">Chatlarim</div>
+  <div class="page-subtitle">Admin bilan buyurtmalaringiz bo'yicha yozishmalar</div>
+
+  {% if not items %}
+  <div class="empty-state">Hali buyurtmangiz yo'q. <a href="{% url 'home' %}" style="color:var(--green); font-weight:700;">Buyurtma berish</a></div>
+  {% endif %}
+
+  {% for item in items %}
+  <a class="chat-list-item" href="{% url 'client_chat_thread' item.order.id %}">
+    <div class="icon-circle">{{ item.order.category.icon }}</div>
+    <div class="cl-info">
+      <div class="cl-title">{{ item.order.category.name }}</div>
+      <div class="cl-sub">{% if item.last_message %}{{ item.last_message.text }}{% else %}Xabarlar yo'q{% endif %}</div>
+    </div>
+    {% if item.unread %}
+    <div class="cl-badge">{{ item.unread }}</div>
+    {% endif %}
+  </a>
+  {% endfor %}
+</div>
+{% endblock %}

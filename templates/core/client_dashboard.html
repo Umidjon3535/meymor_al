@@ -34,7 +34,7 @@
     {% endif %}
 
     <div style="display:flex; gap:8px; margin-top:10px;">
-      <button class="btn btn-outline btn-sm" onclick="openWidgetChat({{ order.id }}, '{{ order.category.icon }} {{ order.category.name|escapejs }}')">💬 Admin bilan chat</button>
+      <a href="{% url 'client_chat_thread' order.id %}" class="btn btn-outline btn-sm">💬 Admin bilan chat</a>
       {% if order.stage == 3 and not order.rating and order.master %}
       <button class="btn btn-primary btn-sm" onclick="openRate({{ order.id }})">⭐ Baholash</button>
       {% endif %}

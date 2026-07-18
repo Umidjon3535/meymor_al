@@ -212,6 +212,29 @@ def chat_client_orders(request):
     return JsonResponse({'orders': data})
 
 
+@role_required('client')
+def client_chat_list(request):
+    orders = Order.objects.filter(client=request.user).select_related('category')
+    items = []
+    for order in orders:
+        unread = order.messages.filter(sender='admin', is_read=False).count()
+        last_message = order.messages.last()
+        items.append({'order': order, 'unread': unread, 'last_message': last_message})
+    return render(request, 'core/client_chat_list.html', {'items': items})
+
+
+@role_required('client')
+def client_chat_thread(request, order_id):
+    order = get_object_or_404(Order, id=order_id, client=request.user)
+    return render(request, 'core/client_chat_thread.html', {'order': order})
+
+
+@role_required('admin')
+def admin_order_chat(request, order_id):
+    order = get_object_or_404(Order.objects.select_related('category', 'master'), id=order_id)
+    return render(request, 'core/admin_order_chat.html', {'order': order, 'active_tab': 'orders'})
+
+
 # ---------- Master ----------
 
 @role_required('master')
