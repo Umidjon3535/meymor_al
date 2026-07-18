@@ -75,6 +75,10 @@ class Order(models.Model):
     review = models.TextField(blank=True)
     is_seen_by_admin = models.BooleanField(default=False)
 
+    contract_file = models.FileField(upload_to='contracts/', null=True, blank=True)
+    contract_uploaded_at = models.DateTimeField(null=True, blank=True)
+    contract_approved_by_client = models.BooleanField(default=False)
+
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:

@@ -1,45 +1,80 @@
 {% extends 'core/admin_base.html' %}
 {% block admin_content %}
-<a href="{% url 'admin_orders' %}" class="hint">← Buyurtmalarga qaytish</a>
-<div class="card" style="margin-top:14px; max-width:520px;">
-  <div><b>{{ order.category.icon }} {{ order.category.name }}</b> — {{ order.client_name }} ({{ order.client_phone }})</div>
-  <div class="hint">{{ order.address }}</div>
-  <div class="order-desc">{{ order.description|default:"Izohsiz" }}</div>
+<div class="order-detail-wrap">
+  <a href="{% url 'admin_orders' %}" class="hint">← Buyurtmalarga qaytish</a>
 
-  <div class="stages">
-    {% for label in order.STAGE_CHOICES %}
-    <div class="stage {% if forloop.counter0 < order.stage %}done{% elif forloop.counter0 == order.stage %}active{% endif %}">
-      <div class="dot">{% if forloop.counter0 < order.stage %}✓{% else %}{{ forloop.counter }}{% endif %}</div>
-      {{ label.1 }}
+  <div class="card order-detail-card">
+    <div class="od-head">
+      <div class="icon-circle">{{ order.category.icon }}</div>
+      <div>
+        <div class="od-title">{{ order.category.name }}</div>
+        <div class="od-sub">{{ order.client_name }} · {{ order.client_phone }}</div>
+      </div>
     </div>
-    {% endfor %}
-  </div>
 
-  <form method="post" action="{% url 'admin_order_assign' order.id %}">
-    {% csrf_token %}
-    <div class="field">
-      <label>Usta biriktirish</label>
-      <select name="master_id">
-        <option value="">— tanlanmagan —</option>
-        {% for m in masters %}
-        <option value="{{ m.id }}" {% if order.master_id == m.id %}selected{% endif %}>{{ m.name_or_username }} (⭐ {{ m.rating }})</option>
-        {% endfor %}
-      </select>
+    <div class="od-section">
+      <div class="hint">📍 {{ order.address }}</div>
+      <div class="order-desc">{{ order.description|default:"Izohsiz" }}</div>
     </div>
-    <button type="submit" class="btn btn-outline btn-sm">Saqlash</button>
-  </form>
 
-  <div style="margin:16px 0;">
-    {% if order.stage < 3 %}
-    <form method="post" action="{% url 'admin_order_advance' order.id %}">
-      {% csrf_token %}
-      <button type="submit" class="btn btn-primary btn-sm">Keyingi bosqichga o'tkazish →</button>
-    </form>
-    {% else %}
-    <span class="tag approved">Yakunlangan</span>
-    {% endif %}
+    <div class="stages">
+      {% for label in order.STAGE_CHOICES %}
+      <div class="stage {% if forloop.counter0 < order.stage %}done{% elif forloop.counter0 == order.stage %}active{% endif %}">
+        <div class="dot">{% if forloop.counter0 < order.stage %}✓{% else %}{{ forloop.counter }}{% endif %}</div>
+        {{ label.1 }}
+      </div>
+      {% endfor %}
+    </div>
+
+    <div class="od-section">
+      <h4>Usta biriktirish</h4>
+      <form method="post" action="{% url 'admin_order_assign' order.id %}" style="display:flex; gap:8px; flex-wrap:wrap;">
+        {% csrf_token %}
+        <select name="master_id" style="flex:1; min-width:200px;">
+          <option value="">— tanlanmagan —</option>
+          {% for m in masters %}
+          <option value="{{ m.id }}" {% if order.master_id == m.id %}selected{% endif %}>{{ m.name_or_username }} (⭐ {{ m.rating }})</option>
+          {% endfor %}
+        </select>
+        <button type="submit" class="btn btn-outline btn-sm">Saqlash</button>
+      </form>
+    </div>
+
+    <div class="od-section">
+      <h4>Shartnoma</h4>
+      {% if order.contract_file %}
+        <div class="hint" style="margin-bottom:8px;">
+          📄 <a href="{{ order.contract_file.url }}" target="_blank" style="color:var(--green); font-weight:600;">Shartnomani ko'rish (PDF)</a>
+          — yuklangan: {{ order.contract_uploaded_at|date:"d.m.Y H:i" }}
+        </div>
+        {% if order.contract_approved_by_client %}
+          <span class="tag approved">✅ Mijoz tomonidan tasdiqlangan</span>
+        {% else %}
+          <span class="tag pending">⏳ Mijoz javobini kutmoqda</span>
+        {% endif %}
+      {% else %}
+        <div class="hint" style="margin-bottom:8px;">Hali shartnoma yuklanmagan</div>
+      {% endif %}
+
+      <form method="post" action="{% url 'admin_order_contract_upload' order.id %}" enctype="multipart/form-data" style="display:flex; gap:8px; margin-top:10px; flex-wrap:wrap;">
+        {% csrf_token %}
+        <input type="file" name="contract_file" accept="application/pdf" required style="flex:1; min-width:200px;">
+        <button type="submit" class="btn btn-outline btn-sm">{% if order.contract_file %}Qayta yuklash{% else %}Yuklash{% endif %}</button>
+      </form>
+    </div>
+
+    <div class="od-section od-actions">
+      {% if order.stage < 3 %}
+      <form method="post" action="{% url 'admin_order_advance' order.id %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-primary btn-sm">Keyingi bosqichga o'tkazish →</button>
+      </form>
+      {% else %}
+      <span class="tag approved">Yakunlangan</span>
+      {% endif %}
+
+      <a href="{% url 'admin_order_chat' order.id %}" class="btn btn-outline btn-sm">💬 Mijoz bilan chat</a>
+    </div>
   </div>
-
-  <a href="{% url 'admin_order_chat' order.id %}" class="btn btn-outline btn-sm" style="display:inline-block; margin-top:6px;">💬 Mijoz bilan chat</a>
 </div>
 {% endblock %}

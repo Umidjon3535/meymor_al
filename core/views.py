@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.hashers import make_password
 from django.http import HttpResponseForbidden, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.utils import timezone
 
 from .decorators import role_required
 from .forms import LoginForm, MasterProfileForm, OrderForm, RatingForm, RegisterForm
@@ -138,6 +139,18 @@ def rate_order(request, order_id):
             order.review = form.cleaned_data['review']
             order.save()
             messages.success(request, 'Rahmat! Bahoyingiz saqlandi.')
+    return redirect('client_dashboard')
+
+
+@role_required('client')
+def approve_contract(request, order_id):
+    order = get_object_or_404(Order, id=order_id, client=request.user)
+    if request.method == 'POST' and order.contract_file and not order.contract_approved_by_client:
+        order.contract_approved_by_client = True
+        if order.stage < 2:
+            order.stage = 2
+        order.save()
+        messages.success(request, "Shartnoma tasdiqlandi ✅")
     return redirect('client_dashboard')
 
 
@@ -303,6 +316,18 @@ def admin_order_advance(request, order_id):
         order.stage += 1
         order.save()
         messages.success(request, f'Buyurtma holati: {order.stage_label}')
+    return redirect('admin_order_detail', order_id=order.id)
+
+
+@role_required('admin')
+def admin_order_contract_upload(request, order_id):
+    order = get_object_or_404(Order, id=order_id)
+    if request.method == 'POST' and request.FILES.get('contract_file'):
+        order.contract_file = request.FILES['contract_file']
+        order.contract_uploaded_at = timezone.now()
+        order.contract_approved_by_client = False
+        order.save()
+        messages.success(request, "Shartnoma yuklandi, mijozga yuborildi")
     return redirect('admin_order_detail', order_id=order.id)
 
 

@@ -867,3 +867,54 @@ a { text-decoration: none; color: inherit; }
   justify-content: center;
   padding: 0 5px;
 }
+
+/* ---------- Admin order detail ---------- */
+.order-detail-wrap {
+  max-width: 620px;
+  margin: 0 auto;
+}
+.order-detail-card {
+  margin-top: 14px;
+  padding: 26px;
+}
+.od-head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+.od-head .icon-circle {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: var(--bg-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  flex-shrink: 0;
+}
+.od-title { font-weight: 800; font-size: 18px; }
+.od-sub { font-size: 13px; color: var(--muted); }
+
+.od-section {
+  padding: 16px 0;
+  border-top: 1px solid var(--border);
+}
+.od-section h4 { margin: 0 0 10px; font-size: 14px; }
+.od-section:first-of-type { border-top: none; padding-top: 0; }
+
+.od-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.contract-box {
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin-top: 10px;
+}

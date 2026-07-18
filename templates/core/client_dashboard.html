@@ -33,6 +33,20 @@
     <div class="hint">Sizning bahoyingiz: {% for i in "12345" %}{% if forloop.counter <= order.rating %}★{% else %}☆{% endif %}{% endfor %} — "{{ order.review }}"</div>
     {% endif %}
 
+    {% if order.contract_file %}
+    <div class="contract-box">
+      <div class="hint">📄 <a href="{{ order.contract_file.url }}" target="_blank" style="color:var(--green); font-weight:600;">Shartnomani ko'rish (PDF)</a></div>
+      {% if order.contract_approved_by_client %}
+        <span class="tag approved">✅ Siz tasdiqladingiz</span>
+      {% else %}
+        <form method="post" action="{% url 'approve_contract' order.id %}" style="margin-top:8px;">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-primary btn-sm">✅ Shartnomani tasdiqlayman</button>
+        </form>
+      {% endif %}
+    </div>
+    {% endif %}
+
     <div style="display:flex; gap:8px; margin-top:10px;">
       <a href="{% url 'client_chat_thread' order.id %}" class="btn btn-outline btn-sm">💬 Admin bilan chat</a>
       {% if order.stage == 3 and not order.rating and order.master %}

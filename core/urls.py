@@ -11,6 +11,7 @@ urlpatterns = [
     path('order/create/<slug:category_slug>/', views.order_create, name='order_create'),
     path('client/', views.client_dashboard, name='client_dashboard'),
     path('client/order/<int:order_id>/rate/', views.rate_order, name='rate_order'),
+    path('client/order/<int:order_id>/approve-contract/', views.approve_contract, name='approve_contract'),
 
     path('chat/<int:order_id>/messages/', views.chat_messages, name='chat_messages'),
     path('chat/<int:order_id>/send/', views.chat_send, name='chat_send'),
@@ -26,6 +27,7 @@ urlpatterns = [
     path('admin-panel/orders/<int:order_id>/', views.admin_order_detail, name='admin_order_detail'),
     path('admin-panel/orders/<int:order_id>/advance/', views.admin_order_advance, name='admin_order_advance'),
     path('admin-panel/orders/<int:order_id>/assign/', views.admin_order_assign, name='admin_order_assign'),
+    path('admin-panel/orders/<int:order_id>/contract/', views.admin_order_contract_upload, name='admin_order_contract_upload'),
     path('admin-panel/orders/<int:order_id>/chat/', views.admin_order_chat, name='admin_order_chat'),
     path('admin-panel/requests/', views.admin_requests, name='admin_requests'),
     path('admin-panel/requests/<int:user_id>/approve/', views.admin_request_approve, name='admin_request_approve'),
