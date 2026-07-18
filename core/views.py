@@ -160,6 +160,9 @@ def chat_messages(request, order_id):
         {'sender': m.sender, 'text': m.text, 'time': m.created_at.strftime('%H:%M')}
         for m in order.messages.all()
     ]
+    # Opening the thread marks the other side's messages as read.
+    other_sender = 'client' if request.user.role == 'admin' else 'admin'
+    order.messages.filter(sender=other_sender, is_read=False).update(is_read=True)
     return JsonResponse({'messages': data})
 
 
@@ -174,6 +177,39 @@ def chat_send(request, order_id):
             sender = 'admin' if request.user.role == 'admin' else 'client'
             Message.objects.create(order=order, sender=sender, text=text)
     return JsonResponse({'ok': True})
+
+
+@role_required('client')
+def chat_unread_summary(request):
+    orders = Order.objects.filter(client=request.user).select_related('category')
+    items = []
+    total = 0
+    for order in orders:
+        count = order.messages.filter(sender='admin', is_read=False).count()
+        if count:
+            items.append({
+                'order_id': order.id,
+                'category_name': order.category.name,
+                'category_icon': order.category.icon,
+                'count': count,
+            })
+            total += count
+    return JsonResponse({'total': total, 'orders': items})
+
+
+@role_required('client')
+def chat_client_orders(request):
+    orders = Order.objects.filter(client=request.user).select_related('category')
+    data = [
+        {
+            'order_id': o.id,
+            'category_name': o.category.name,
+            'category_icon': o.category.icon,
+            'stage_label': o.stage_label,
+        }
+        for o in orders
+    ]
+    return JsonResponse({'orders': data})
 
 
 # ---------- Master ----------

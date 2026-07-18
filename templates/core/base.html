@@ -48,6 +48,21 @@
 </div>
 {% endif %}
 
+{% if user.is_authenticated and user.role == 'client' %}
+<button class="chat-widget-btn" id="chatWidgetBtn">
+  💬
+  <span class="chat-widget-badge" id="chatWidgetBadge" style="display:none;"></span>
+</button>
+<div class="chat-widget-panel" id="chatWidgetPanel">
+  <div class="chat-widget-head">
+    <button class="back-btn" id="chatWidgetBack">←</button>
+    <span id="chatWidgetTitle">Admin bilan chat</span>
+    <button class="close-btn" id="chatWidgetClose">✕</button>
+  </div>
+  <div class="chat-widget-body" id="chatWidgetBody"></div>
+</div>
+{% endif %}
+
 <script src="{% static 'js/theme.js' %}"></script>
 <script>
 document.querySelectorAll('.toast-init').forEach((el) => {
@@ -59,6 +74,9 @@ document.querySelectorAll('.toast-init').forEach((el) => {
   setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 300); }, 3500);
 });
 </script>
+{% if user.is_authenticated and user.role == 'client' %}
+<script src="{% static 'js/chat-widget.js' %}"></script>
+{% endif %}
 {% block extra_js %}{% endblock %}
 </body>
 </html>

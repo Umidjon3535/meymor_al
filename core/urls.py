@@ -14,6 +14,8 @@ urlpatterns = [
 
     path('chat/<int:order_id>/messages/', views.chat_messages, name='chat_messages'),
     path('chat/<int:order_id>/send/', views.chat_send, name='chat_send'),
+    path('chat/unread/', views.chat_unread_summary, name='chat_unread_summary'),
+    path('chat/my-orders/', views.chat_client_orders, name='chat_client_orders'),
 
     path('master/', views.master_profile, name='master_profile'),
 

@@ -95,6 +95,7 @@ class Message(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='messages')
     sender = models.CharField(max_length=10, choices=SENDER_CHOICES)
     text = models.TextField()
+    is_read = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
