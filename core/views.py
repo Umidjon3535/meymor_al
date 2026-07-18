@@ -296,6 +296,7 @@ def admin_orders(request):
         orders = orders.filter(stage=int(stage_param))
 
     stage_counts = {str(s): all_orders.filter(stage=s).count() for s, _ in Order.STAGE_CHOICES}
+    today_count = all_orders.filter(created_at__date=timezone.localdate()).count()
 
     # Visiting the orders list acknowledges any new incoming orders.
     Order.objects.filter(is_seen_by_admin=False).update(is_seen_by_admin=True)
@@ -306,6 +307,7 @@ def admin_orders(request):
         'stage_choices': Order.STAGE_CHOICES,
         'stage_counts': stage_counts,
         'total_count': all_orders.count(),
+        'today_count': today_count,
         'selected_stage': stage_param,
     })
 

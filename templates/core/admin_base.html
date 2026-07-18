@@ -13,6 +13,8 @@
 <div class="admin-layout">
   <aside class="admin-sidebar">
     <div class="logo"><span class="logo-badge">A</span> Al Meymor</div>
+
+    <div class="nav-section-label">Boshqaruv</div>
     <a href="{% url 'admin_orders' %}" class="nav-item {% if active_tab == 'orders' %}active{% endif %}">
       📦 Buyurtmalar
       <span class="nav-badge" id="badge-orders" style="display:none;"></span>
@@ -21,13 +23,18 @@
       🧾 Usta so'rovlari
       <span class="nav-badge" id="badge-requests" style="display:none;"></span>
     </a>
+
+    <div class="nav-section-label">Foydalanuvchilar</div>
     <a href="{% url 'admin_masters' %}" class="nav-item {% if active_tab == 'masters' %}active{% endif %}">🧑‍🔧 Ustalar</a>
     <a href="{% url 'admin_clients' %}" class="nav-item {% if active_tab == 'clients' %}active{% endif %}">
       👥 Mijozlar
       <span class="nav-badge" id="badge-clients" style="display:none;"></span>
     </a>
+
+    <div class="nav-spacer"></div>
+
     <div class="nav-item" onclick="toggleTheme()">🌓 Rejim almashtirish</div>
-    <a href="{% url 'logout' %}" class="nav-item" style="margin-top:8px; color:#ffb3ab;">🚪 Chiqish</a>
+    <a href="{% url 'logout' %}" class="nav-item" style="color:#ff9d9d;">🚪 Chiqish</a>
   </aside>
 
   <main class="admin-main">

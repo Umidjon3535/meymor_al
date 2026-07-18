@@ -1,22 +1,34 @@
 {% extends 'core/admin_base.html' %}
 {% block admin_content %}
 <div class="page-title">Ustalar</div>
+<div class="page-subtitle">Tasdiqlangan va faoliyat yuritayotgan ustalar ro'yxati</div>
+
+<div class="stat-cards">
+  <div class="stat-card">
+    <div class="sc-icon">🧑‍🔧</div>
+    <div class="sc-num">{{ masters|length }}</div>
+    <div class="sc-label">Jami ustalar</div>
+  </div>
+</div>
+
 {% if not masters %}
 <div class="empty-state">Tasdiqlangan ustalar yo'q</div>
 {% else %}
-<table class="table">
-  <thead><tr><th>Ism</th><th>Telefon</th><th>Yo'nalish</th><th>Reyting</th><th>Qo'shilgan sana</th></tr></thead>
-  <tbody>
-    {% for u in masters %}
-    <tr>
-      <td>{{ u.name_or_username }}</td>
-      <td>{{ u.phone }}</td>
-      <td>{% if u.category %}{{ u.category.icon }} {{ u.category.name }}{% else %}-{% endif %}</td>
-      <td>⭐ {{ u.rating }} ({{ u.reviews_count }})</td>
-      <td class="hint">{{ u.date_joined|date:"d.m.Y H:i" }}</td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
+{% for u in masters %}
+<div class="admin-row-card">
+  {% if u.photo %}
+    <img src="{{ u.photo.url }}" alt="" style="width:44px; height:44px; border-radius:12px; object-fit:cover; flex-shrink:0;">
+  {% else %}
+    <div class="arc-icon">{% if u.category %}{{ u.category.icon }}{% else %}🧑‍🔧{% endif %}</div>
+  {% endif %}
+  <div class="arc-main">
+    <div class="arc-title">{{ u.name_or_username }}</div>
+    <div class="arc-sub">{{ u.phone }} · {% if u.category %}{{ u.category.name }}{% else %}-{% endif %} · qo'shilgan: {{ u.date_joined|date:"d.m.Y" }}</div>
+  </div>
+  <div class="arc-meta">
+    <span class="badge">⭐ {{ u.rating }} ({{ u.reviews_count }})</span>
+  </div>
+</div>
+{% endfor %}
 {% endif %}
 {% endblock %}

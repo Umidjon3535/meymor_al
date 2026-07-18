@@ -2,6 +2,30 @@
 {% load dict_extras %}
 {% block admin_content %}
 <div class="page-title">Buyurtmalar</div>
+<div class="page-subtitle">Barcha kelib tushgan buyurtmalarni shu yerdan boshqaring</div>
+
+<div class="stat-cards">
+  <div class="stat-card">
+    <div class="sc-icon">📦</div>
+    <div class="sc-num">{{ total_count }}</div>
+    <div class="sc-label">Jami buyurtmalar</div>
+  </div>
+  <div class="stat-card">
+    <div class="sc-icon">🆕</div>
+    <div class="sc-num">{{ today_count }}</div>
+    <div class="sc-label">Bugun kelgan</div>
+  </div>
+  <div class="stat-card">
+    <div class="sc-icon">⏳</div>
+    <div class="sc-num">{{ stage_counts|get_item:1 }}</div>
+    <div class="sc-label">Ko'rib chiqilmoqda</div>
+  </div>
+  <div class="stat-card">
+    <div class="sc-icon">✅</div>
+    <div class="sc-num">{{ stage_counts|get_item:3 }}</div>
+    <div class="sc-label">Yakunlangan</div>
+  </div>
+</div>
 
 <div class="filter-tabs">
   <a href="?stage=all" class="filter-tab {% if selected_stage == 'all' %}active{% endif %}">
@@ -17,20 +41,18 @@
 {% if not orders %}
 <div class="empty-state">Bu bo'limda buyurtmalar yo'q</div>
 {% else %}
-<table class="table">
-  <thead><tr><th>Mijoz</th><th>Kategoriya</th><th>Manzil</th><th>Sana</th><th>Holat</th><th></th></tr></thead>
-  <tbody>
-    {% for order in orders %}
-    <tr>
-      <td>{{ order.client_name }}<br><span class="hint">{{ order.client_phone }}</span></td>
-      <td>{{ order.category.icon }} {{ order.category.name }}</td>
-      <td>{{ order.address }}</td>
-      <td class="hint">{{ order.created_at|date:"d.m.Y H:i" }}</td>
-      <td><span class="badge">{{ order.stage_label }}</span></td>
-      <td><a class="btn btn-outline btn-sm" href="{% url 'admin_order_detail' order.id %}">Ko'rish</a></td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
+{% for order in orders %}
+<a href="{% url 'admin_order_detail' order.id %}" class="admin-row-card">
+  <div class="arc-icon">{{ order.category.icon }}</div>
+  <div class="arc-main">
+    <div class="arc-title">{{ order.client_name }}</div>
+    <div class="arc-sub">{{ order.category.name }} · {{ order.address }} · {{ order.created_at|date:"d.m.Y H:i" }}</div>
+  </div>
+  <div class="arc-meta">
+    <span class="badge">{{ order.stage_label }}</span>
+    <span class="hint" style="margin:0;">{{ order.client_phone }}</span>
+  </div>
+</a>
+{% endfor %}
 {% endif %}
 {% endblock %}
