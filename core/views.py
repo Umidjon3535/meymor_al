@@ -2,6 +2,8 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.hashers import make_password
+from django.core.paginator import Paginator
+from django.db.models import Q
 from django.http import HttpResponseForbidden, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
@@ -397,7 +399,21 @@ def admin_request_reject(request, user_id):
 @role_required('admin')
 def admin_masters(request):
     masters = User.objects.filter(role='master', contract_signed=True).order_by('-date_joined')
-    return render(request, 'core/admin_masters.html', {'masters': masters, 'active_tab': 'masters'})
+    query = request.GET.get('q', '').strip()
+    if query:
+        masters = masters.filter(
+            Q(first_name__icontains=query) | Q(username__icontains=query) | Q(phone__icontains=query)
+        )
+    total_count = masters.count()
+    paginator = Paginator(masters, 12)
+    page_obj = paginator.get_page(request.GET.get('page'))
+    return render(request, 'core/admin_masters.html', {
+        'page_obj': page_obj,
+        'masters': page_obj.object_list,
+        'query': query,
+        'total_count': total_count,
+        'active_tab': 'masters',
+    })
 
 
 @role_required('admin')
@@ -405,7 +421,22 @@ def admin_clients(request):
     clients = User.objects.filter(role='client').order_by('-date_joined')
     # Visiting the clients list acknowledges any new signups.
     User.objects.filter(role='client', is_seen_by_admin=False).update(is_seen_by_admin=True)
-    return render(request, 'core/admin_clients.html', {'clients': clients, 'active_tab': 'clients'})
+
+    query = request.GET.get('q', '').strip()
+    if query:
+        clients = clients.filter(
+            Q(first_name__icontains=query) | Q(username__icontains=query) | Q(phone__icontains=query)
+        )
+    total_count = clients.count()
+    paginator = Paginator(clients, 12)
+    page_obj = paginator.get_page(request.GET.get('page'))
+    return render(request, 'core/admin_clients.html', {
+        'page_obj': page_obj,
+        'clients': page_obj.object_list,
+        'query': query,
+        'total_count': total_count,
+        'active_tab': 'clients',
+    })
 
 
 @role_required('admin')

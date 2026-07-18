@@ -6,13 +6,19 @@
 <div class="stat-cards">
   <div class="stat-card">
     <div class="sc-icon">👥</div>
-    <div class="sc-num">{{ clients|length }}</div>
+    <div class="sc-num">{{ total_count }}</div>
     <div class="sc-label">Jami mijozlar</div>
   </div>
 </div>
 
+<form method="get" class="admin-search">
+  <span>🔍</span>
+  <input type="text" name="q" value="{{ query }}" placeholder="Ism yoki telefon bo'yicha qidirish...">
+  <button type="submit" class="btn btn-primary btn-sm">Qidirish</button>
+</form>
+
 {% if not clients %}
-<div class="empty-state">Mijozlar yo'q</div>
+<div class="empty-state">{% if query %}"{{ query }}" bo'yicha hech narsa topilmadi{% else %}Mijozlar yo'q{% endif %}</div>
 {% else %}
 {% for c in clients %}
 <div class="admin-row-card">
@@ -26,5 +32,6 @@
   </div>
 </div>
 {% endfor %}
+{% include 'core/_pagination.html' %}
 {% endif %}
 {% endblock %}
