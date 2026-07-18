@@ -73,6 +73,7 @@ class Order(models.Model):
     stage = models.PositiveSmallIntegerField(choices=STAGE_CHOICES, default=0)
     rating = models.PositiveSmallIntegerField(null=True, blank=True)
     review = models.TextField(blank=True)
+    is_seen_by_admin = models.BooleanField(default=False)
 
     created_at = models.DateTimeField(auto_now_add=True)
 

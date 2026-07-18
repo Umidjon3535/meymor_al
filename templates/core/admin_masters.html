@@ -5,7 +5,7 @@
 <div class="empty-state">Tasdiqlangan ustalar yo'q</div>
 {% else %}
 <table class="table">
-  <thead><tr><th>Ism</th><th>Telefon</th><th>Yo'nalish</th><th>Reyting</th></tr></thead>
+  <thead><tr><th>Ism</th><th>Telefon</th><th>Yo'nalish</th><th>Reyting</th><th>Qo'shilgan sana</th></tr></thead>
   <tbody>
     {% for u in masters %}
     <tr>
@@ -13,6 +13,7 @@
       <td>{{ u.phone }}</td>
       <td>{% if u.category %}{{ u.category.icon }} {{ u.category.name }}{% else %}-{% endif %}</td>
       <td>⭐ {{ u.rating }} ({{ u.reviews_count }})</td>
+      <td class="hint">{{ u.date_joined|date:"d.m.Y H:i" }}</td>
     </tr>
     {% endfor %}
   </tbody>

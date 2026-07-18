@@ -5,13 +5,14 @@
 <div class="empty-state">Mijozlar yo'q</div>
 {% else %}
 <table class="table">
-  <thead><tr><th>Ism</th><th>Telefon</th><th>Buyurtmalar soni</th></tr></thead>
+  <thead><tr><th>Ism</th><th>Telefon</th><th>Buyurtmalar soni</th><th>Ro'yxatdan o'tgan sana</th></tr></thead>
   <tbody>
     {% for c in clients %}
     <tr>
       <td>{{ c.name_or_username }}</td>
       <td>{{ c.phone }}</td>
       <td>{{ c.orders.count }}</td>
+      <td class="hint">{{ c.date_joined|date:"d.m.Y H:i" }}</td>
     </tr>
     {% endfor %}
   </tbody>

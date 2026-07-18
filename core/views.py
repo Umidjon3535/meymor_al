@@ -259,8 +259,32 @@ def master_profile(request):
 
 @role_required('admin')
 def admin_orders(request):
-    orders = Order.objects.select_related('category', 'master').all()
-    return render(request, 'core/admin_orders.html', {'orders': orders, 'active_tab': 'orders'})
+    all_orders = Order.objects.select_related('category', 'master')
+
+    stage_param = request.GET.get('stage', 'all')
+    orders = all_orders
+    if stage_param != 'all' and stage_param.isdigit():
+        orders = orders.filter(stage=int(stage_param))
+
+    stage_counts = {str(s): all_orders.filter(stage=s).count() for s, _ in Order.STAGE_CHOICES}
+
+    # Visiting the orders list acknowledges any new incoming orders.
+    Order.objects.filter(is_seen_by_admin=False).update(is_seen_by_admin=True)
+
+    return render(request, 'core/admin_orders.html', {
+        'orders': orders,
+        'active_tab': 'orders',
+        'stage_choices': Order.STAGE_CHOICES,
+        'stage_counts': stage_counts,
+        'total_count': all_orders.count(),
+        'selected_stage': stage_param,
+    })
+
+
+@role_required('admin')
+def admin_orders_unseen_count(request):
+    count = Order.objects.filter(is_seen_by_admin=False).count()
+    return JsonResponse({'count': count})
 
 
 @role_required('admin')
@@ -320,11 +344,11 @@ def admin_request_reject(request, user_id):
 
 @role_required('admin')
 def admin_masters(request):
-    masters = User.objects.filter(role='master', contract_signed=True)
+    masters = User.objects.filter(role='master', contract_signed=True).order_by('-date_joined')
     return render(request, 'core/admin_masters.html', {'masters': masters, 'active_tab': 'masters'})
 
 
 @role_required('admin')
 def admin_clients(request):
-    clients = User.objects.filter(role='client')
+    clients = User.objects.filter(role='client').order_by('-date_joined')
     return render(request, 'core/admin_clients.html', {'clients': clients, 'active_tab': 'clients'})

@@ -22,6 +22,7 @@ urlpatterns = [
     path('master/', views.master_profile, name='master_profile'),
 
     path('admin-panel/orders/', views.admin_orders, name='admin_orders'),
+    path('admin-panel/orders/unseen-count/', views.admin_orders_unseen_count, name='admin_orders_unseen_count'),
     path('admin-panel/orders/<int:order_id>/', views.admin_order_detail, name='admin_order_detail'),
     path('admin-panel/orders/<int:order_id>/advance/', views.admin_order_advance, name='admin_order_advance'),
     path('admin-panel/orders/<int:order_id>/assign/', views.admin_order_assign, name='admin_order_assign'),
